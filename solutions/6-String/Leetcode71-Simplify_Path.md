@@ -49,4 +49,24 @@ Output: "/a/b/c"
 
 ## Solution
 
-- 这道题用到了一些小东西
+- 这道题用到了一些sstream来处理字符串。
+- 核心的思路很容易理解，就是用栈来保存路径信息，如果遇到非特殊字符就将文件路径存放近栈，如果遇到..就弹出栈。当遍历完这个字符串之后，将栈中的内容进行拼接就可以了。
+    ```
+    #include<sstream>
+
+    class Solution {
+    public:
+        string simplifyPath(string path) {
+            string result, tmp;
+            vector<string> tmpSta;
+            stringstream ss(path);
+            while(getline(ss,tmp,'/')){
+                if(tmp == "" || tmp == ".")continue;
+                else if(tmp == ".." && !tmpSta.empty())tmpSta.pop_back(tmp);
+                else if(tmp != "..")tmpSta.push_back(tmp);
+            }
+            for(auto i : tmpSta)result += ("/" + i);
+            return tmpSta.empty() ? "/" : result;
+        }
+    };
+    ```
