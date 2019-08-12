@@ -31,3 +31,22 @@ Output: [9,4]
 ### Step2 使用set
 - To solve the problem in linear time, let's use the structure **set**, which provides **in/contains operation in O(1) time** in average case.
 - 也就是先把两个vector中的数据分别转换为两个set，再遍历其中一个set，查找它中的元素在另一个set中是否存在。
+    ```
+    class Solution {
+    public:
+        vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+            vector<int> result;
+            unordered_set<int> a1, b1;
+            for(auto i : nums1){
+                a1.insert(i);
+            }
+            for(auto i : nums2){
+                b1.insert(i);
+            }
+            for(auto i : a1){
+                if(b1.count(i) != 0)result.push_back(i);
+            }
+            return result;
+        }
+    };
+    ```
