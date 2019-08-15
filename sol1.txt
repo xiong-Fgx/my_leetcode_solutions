@@ -1,0 +1,35 @@
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        int tLen = t.size(), sLen = s.size();
+        int l = 0, r = 0;
+        int start = 0, minLen = INT_MAX;
+        int len = 0;
+        unordered_map<char, int> dict;
+        unordered_map<char, int> now;
+
+        for(char i : t)dict[i]++;
+        while(r < sLen){
+            char c1 = s[r];
+            if(dict.count(c1)){
+                now[c1]++;
+                if(now[c1] == dict[c1])len++;
+            }
+            r++;
+            while(len == dict.size()){
+                if(r - l < minLen){
+                    minLen = r - l;
+                    start = l;
+                }
+                char c2 = s[l];
+                if(dict.count(c2)){
+                    now[c2]--;
+                    if(now[c2] < dict[c2])
+                        len--;
+                }
+                l++;
+            }
+        }
+        return (minLen == INT_MAX) ? "" : s.substr(start, minLen);
+    }
+};
