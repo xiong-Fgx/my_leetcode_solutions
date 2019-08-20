@@ -43,6 +43,29 @@ Explanation: The perimeter is the 16 yellow stripes in the image below:
         return result;
     }
     ```
+- 其实可以看到，在进行result的计算时是相当繁琐的，这里可以改一下
+- 本来的count每个格子应该+4，但是肯定有些格子是有特殊情况的，这里需要对每个格子的**四周**进行详细的判断。
+    ```
+    class Solution {
+    public:
+
+        int islandPerimeter(vector<vector<int>>& grid) {
+            int count = 0;
+            
+            for(int i = 0;i<grid.size();i++) {
+                for(int j = 0; j<grid[0].size(); j++) {
+                    if(grid[i][j] == 1) {
+                        count += 4 - (i>0 ? grid[i-1][j] : 0) - (i < grid.size()-1 ? grid[i+1][j] : 0) - (j>0 ? grid[i][j-1] : 0) 
+                            - (j<grid[0].size()-1 ? grid[i][j+1] : 0);
+                    }
+                }
+            }
+            
+            return count;
+        }
+    };
+    ```
+
 ### Step2：
 - 上面的方法是复杂的，因此需要简化。 
 - 首先，如果没有重叠的话，每个位置如果值为1，都有四条边，因此用count来计算总个数。
