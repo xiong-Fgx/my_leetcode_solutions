@@ -48,30 +48,6 @@ Explanation: You don't need to remove any of the intervals since they're already
   2. 从排序后的第一个区间开始，向后查找，如果有哪个区间的起始值小于这个区间的结束值，则将这个区间删除
   3. 一直到所有的区间都遍历完，就可以求出结果
 
-```c++
-class Solution {
-public:
-    static bool comp(vector<int> &x, vector<int> &y){
-        return x[1] < y[1];
-    }
-    int eraseOverlapIntervals(vector<vector<int>>& nums) {
-        sort(nums.begin(), nums.end(), comp);
-        int count = 0, j = 0;
-        vector<int> check;
-        for(int i = 1; i < nums.size(); i++){
-            if(nums[j][1] > nums[i][0])
-                count++, check.push_back(i);
-            else{
-                j++;
-                if(check.size() and check.back() >= j)
-                    j = check.back()+1;
-            }
-        }
-        return count;
-    }
-};
-```
-
 - 最开始的思路是这样的（下面的程序中）：设置一个删除的元素表：check，如果有区间和结束最小的区间重合，那么就把这个区间的ID放进去，并将result++。不过这样会有一个问题，就是每次搜查一个区间的时候，都会对所有的deleted列表进行检索，这样的效率是很低的。
 
   ```C++
@@ -105,4 +81,43 @@ public:
 
   
 
-- 前面一种解的精妙之处在于，它没有使用双重循环，而是说只用了一层循环。**让后面那个元素（i）完成循环，它前面的那个（j）如果没问题的话，就可以+1.**
+- 下面一种解的精妙之处在于，它没有使用双重循环，而是说只用了一层循环。**让后面那个指针移动，前面的只有在不存在不满足情况的时候才进行更新，并且每次更新都更新到j的位置。**
+
+```
+|------|
+
+    |----|  deleted
+
+					|------|  下次把更新到这里就行了
+```
+
+
+```c++
+class Solution {
+public:
+    static bool cmp(vector<int> &a, vector<int> &b){
+        return a[1] < b[1];
+    }
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        int result = 0;
+        int i = 0, j = 0;
+        sort(intervals.begin(), intervals.end(), cmp);
+        vector<int> deleted;
+        for(j = 1; j < intervals.size(); j++){
+            if(intervals[i][1] > intervals[j][0]){
+                result++;
+                deleted.push_back(j);
+            }
+            else{
+                i++;
+                if(!deleted.empty() && deleted.back() >= i)
+                    i = j;
+            }
+        }
+        return result;
+    }
+};
+```
+
+
+
